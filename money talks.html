@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Are you single?</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+      overflow: hidden;
+      position: relative;
+      height: 100vh;
+      background-color: #ffe6f0;
+      transition: background-color 1s;
+    }
+
+    h1 {
+      font-size: 2em;
+      transition: all 0.5s;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 1.2em;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      transition: all 0.5s ease;
+    }
+
+    #yes {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    #no {
+      background-color: #f44336;
+      color: white;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    #popup {
+      position: fixed;
+      bottom: -400px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #ffccdd;
+      color: #333;
+      padding: 30px;
+      border-radius: 20px;
+      font-size: 1.5em;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      opacity: 0;
+      transition: all 1s ease;
+      width: 300px;
+      text-align: center;
+      z-index: 10;
+    }
+
+    #popup.show {
+      bottom: 100px;
+      opacity: 1;
+    }
+
+    #popup .emojis {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    .popup-btn {
+      padding: 10px 20px;
+      margin: 10px 5px 0 5px;
+      font-size: 1em;
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+      background-color: #ff6699;
+      color: white;
+      transition: background 0.3s;
+    }
+
+    .popup-btn:hover {
+      background-color: #ff3366;
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.1s ease;
+    }
+
+    .rain {
+      position: fixed;
+      top: -50px;
+      font-size: 2em;
+      animation: fall 5s linear infinite;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    #finalPopup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background-color: white;
+      padding: 40px;
+      border-radius: 20px;
+      font-size: 2em;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      opacity: 0;
+      transition: all 0.5s ease;
+      z-index: 20;
+      text-align: center;
+      color: transparent;
+      background-clip: text;
+      -webkit-background-clip: text;
+      background-image: linear-gradient(45deg, pink, red);
+      cursor: pointer;
+    }
+
+    #finalPopup.show {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 id="mainTitle">Are you single?</h1>
+
+  <button id="yes" class="btn">Yes</button>
+  <button id="no" class="btn">No</button>
+
+  <div id="popup">
+    <div class="emojis">🌹🧸❤️</div>
+    <div>lol same, wanna be my pookie bear?</div>
+    <div>
+      <button class="popup-btn">Yes</button>
+      <button class="popup-btn">Yes</button>
+    </div>
+  </div>
+
+  <div id="finalPopup">Congrats ur my pookie bear now :))</div>
+
+  <script>
+    const noButton = document.getElementById('no');
+    const yesButton = document.getElementById('yes');
+    const popup = document.getElementById('popup');
+    const popupYesButtons = document.querySelectorAll('.popup-btn');
+    const finalPopup = document.getElementById('finalPopup');
+    const mainTitle = document.getElementById('mainTitle');
+    let clickCount = 0;
+    let rainStarted = false;
+
+    noButton.addEventListener('click', () => {
+      clickCount++;
+
+      if (clickCount < 4) {
+        const x = Math.random() * (window.innerWidth - noButton.offsetWidth);
+        const y = Math.random() * (window.innerHeight - noButton.offsetHeight);
+        noButton.style.left = `${x}px`;
+        noButton.style.top = `${y}px`;
+      } else {
+        noButton.classList.add('fade-out');
+        noButton.disabled = true;
+
+        setTimeout(() => {
+          noButton.style.display = 'none';
+        }, 100);
+      }
+    });
+
+    yesButton.addEventListener('click', () => {
+      popup.classList.add('show');
+    });
+
+    popupYesButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        if (!rainStarted) {
+          startRain();
+          rainStarted = true;
+        }
+        showFinalPopup();
+      });
+    });
+
+    function startRain() {
+      const emojis = ["🌸", "❤️", "🌹", "💖", "💐", "💞"];
+      setInterval(() => {
+        const emoji = document.createElement('div');
+        emoji.classList.add('rain');
+        emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        emoji.style.left = Math.random() * 100 + "vw";
+        emoji.style.fontSize = Math.random() * 20 + 20 + "px";
+        document.body.appendChild(emoji);
+
+        setTimeout(() => {
+          emoji.remove();
+        }, 5000);
+      }, 200);
+    }
+
+    function showFinalPopup() {
+      finalPopup.classList.add('show');
+    }
+
+    finalPopup.addEventListener('click', () => {
+      mainTitle.innerHTML = "ur not single anymore 🥳🎉";
+      finalPopup.style.display = "none";
+    });
+  </script>
+
+</body>
+</html>
